@@ -20,7 +20,22 @@ ENTRY = (
 OUTPUT_PATH = "/output/entry.txt"
 
 
+def validate(entry: str) -> None:
+    """Gate-level hardening for a text the judge reads aloud in its head.
+
+    The entry must be clean prose: no control characters (they would read
+    as a defect, not as words) and no leading/trailing whitespace (it
+    would look like the text was pasted, not written). Both checks are
+    independent of the 1-1000 character gate below.
+    """
+    assert all(ord(ch) >= 0x20 or ch in "\t\n" for ch in entry), \
+        "entry must not contain control characters"
+    assert entry == entry.strip(), \
+        "entry must not have leading or trailing whitespace"
+
+
 def main() -> None:
+    validate(ENTRY)
     assert 1 <= len(ENTRY) <= 1000, f"entry is {len(ENTRY)} chars, must be 1-1000"
     assert ENTRY.strip(), "entry must not be only whitespace"
     assert "\n" not in ENTRY, "entry must be a single line"
